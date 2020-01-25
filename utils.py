@@ -108,17 +108,22 @@ def SaveMomentOfTheDay(m, savedirp):
 
     savep = os.path.join(savedirp, '%s_%s_%s.png' % (when, klass, center))
 
-    if not os.path.exists(savep):
-        r = requests.get(mod['moment'])
 
-        if r.status_code == 200:
-            if r.content:
-                with open(savep, 'wb') as wf:
-                    wf.write(r.content)
-                print('Saved:', '"%s"' % savep)
-            else:
-                print('Fetched a blank moment!')
-        else:
-            print('Failed to fetch moment:', klass, mod['center'])
-    else:
-        print('Moment already fetched:', '"%s"' % savep)
+    if os.path.exists(savep):
+        # print('Moment already fetched:', '"%s"' % savep)
+        return True
+
+    r = requests.get(mod['moment'])
+    if r.status_code != 200:
+        print('Failed to fetch moment:', klass, mod['center'])
+        return False
+
+    if not r.content:
+        print('Fetched empty moment')
+        return False
+
+    with open(savep, 'wb') as wf:
+        wf.write(r.content)
+
+    print('Saved:', '"%s"' % savep)
+    return savep

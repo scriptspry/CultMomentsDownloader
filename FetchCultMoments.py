@@ -35,7 +35,10 @@ def FetchCultMoments(savedirp):
     messages = Utils.ListMessagesMatchingQuery(service, 'me', query='subject:Your Cult Moment of the day is here')
     for message in messages:
         m = Utils.GetMessage(service, 'me', message['id'])
-        Utils.SaveMomentOfTheDay(m, savedirp)
+        r = Utils.SaveMomentOfTheDay(m, savedirp)
+        if r is True:
+            print('Done fetching all Moments.')
+            break
  
 
 if __name__ == '__main__':
